@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import CoreML
+import Vision
 
 class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
 
@@ -19,7 +21,15 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
        
         ImagePicker = UIImagePickerController()
         ImagePicker.delegate = self
+        ImagePicker.sourceType = .camera
         ImagePicker.allowsEditing = true
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            myImageView.image = image
+        }
+        picker.dismiss(animated: true, completion: nil)
     }
 
     
