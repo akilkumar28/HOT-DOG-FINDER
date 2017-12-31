@@ -14,6 +14,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
 
     @IBOutlet weak var myImageView: UIImageView!
     
+    @IBOutlet weak var resultLabel: UILabel!
     var ImagePicker:UIImagePickerController!
     
     override func viewDidLoad() {
@@ -23,6 +24,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         ImagePicker.delegate = self
         ImagePicker.sourceType = .camera
         ImagePicker.allowsEditing = true
+        resultLabel.isHidden = true
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -38,8 +40,21 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
         guard let model = try? VNCoreMLModel(for: Inceptionv3().model) else {fatalError("loading coreML model failed")}
         let request = VNCoreMLRequest(model: model) { (request, error) in
-            guard let result = request.results as? [VNClassificationObservation] else {fatalError("model prediciting image error occured")}
-            print(result)
+            guard let results = request.results as? [VNClassificationObservation] else {fatalError("model prediciting image error occured")}
+        
+            if let firstItem = results.first {
+                if firstItem.identifier.contains("hotdog") {
+                    self.navigationItem.title = "HOT DOG"
+                    self.resultLabel.isHidden = true
+                    
+                }else{
+                    self.navigationItem.title = "NOT-A-HOT-DOG"
+                    self.resultLabel.isHidden = false
+                    let chance = (firstItem.confidence) * 100
+                    let predicitedName = firstItem.identifier
+                    self.resultLabel.text = "There is a \(chance) chance that this can be a \(predicitedName)"
+                }
+            }
         }
         let handler = VNImageRequestHandler(ciImage:image)
         
