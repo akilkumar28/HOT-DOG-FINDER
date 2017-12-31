@@ -8,18 +8,25 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
 
+    @IBOutlet weak var myImageView: UIImageView!
+    
+    var ImagePicker:UIImagePickerController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+       
+        ImagePicker = UIImagePickerController()
+        ImagePicker.delegate = self
+        ImagePicker.allowsEditing = true
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @IBAction func camerTapped(_ sender: Any) {
+        present(ImagePicker, animated: true, completion: nil)
     }
-
+    
 
 }
 
